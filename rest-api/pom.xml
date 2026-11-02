@@ -29,6 +29,17 @@
             <artifactId>jackson-databind</artifactId>
         </dependency>
 
+        <!--
+            Only for the annotations and ProblemDetail: this is a jar of types, not a running
+            framework, and nothing here builds a context. It is still a framework in a
+            contract, which is the price of declaring each path and verb once.
+        -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+
+        <!-- Test -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
