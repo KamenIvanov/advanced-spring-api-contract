@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.pe.advanced.api</groupId>
+        <artifactId>api-contract-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>rest-api</artifactId>
+    <packaging>jar</packaging>
+
+    <!--
+        No spring-web and no JAX-RS. The interfaces describe the operations and their
+        documentation; the HTTP mapping belongs to the controllers that implement them, which
+        take their paths from RestUrl. The cost of that split is that this module cannot
+        produce an OpenAPI document on its own, and the service's build is where it is
+        generated.
+    -->
+    <dependencies>
+        <dependency>
+            <groupId>com.pe.advanced.api</groupId>
+            <artifactId>dto</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+</project>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.pe.advanced.api</groupId>
+        <artifactId>api-contract-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>dto</artifactId>
+    <packaging>jar</packaging>
+
+    <!--
+        Annotations only: jackson-annotations carries no mapper and no
+        databind, so these types describe a shape without imposing how it is read. Note the
+        group id is still com.fasterxml.jackson.core - jackson-annotations is the one artifact
+        Jackson 3 did not move to tools.jackson, and its package stays
+        com.fasterxml.jackson.annotation. @JsonSerialize and @JsonDeserialize did move, which
+        is one more reason type handling belongs in the mapper rather than on the fields.
+    -->
+    <dependencies>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+</project>
