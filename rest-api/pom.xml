@@ -13,10 +13,10 @@
     <packaging>jar</packaging>
 
     <!--
-        The Spring mappings live on the interfaces here, so this module depends on spring-web.
-        That buys one declaration of a path and a verb instead of two, and it is what lets the
-        openapi module generate a complete specification without a running service. The cost is
-        a framework dependency in a contract, which is stated rather than hidden.
+        The mapper that decides what a price and an instant look like on the wire lives here,
+        which is why this module has databind and not only annotations. The way a value is
+        rendered is a fact about the API rather than a choice left to each implementation, so
+        it belongs in the artifact that publishes the API.
     -->
     <dependencies>
         <dependency>
@@ -28,16 +28,6 @@
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-annotations</artifactId>
             <scope>compile</scope>
-        </dependency>
-
-        <!--
-            Only for the annotations and ProblemDetail: this is a jar of types, not a running
-            framework, and nothing here builds a context. It is still a framework in a
-            contract, which is the price of declaring each path and verb once.
-        -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
         </dependency>
 
         <!--
