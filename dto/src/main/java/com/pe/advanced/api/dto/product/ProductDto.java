@@ -1,7 +1,7 @@
 package com.pe.advanced.api.dto.product;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.pe.advanced.api.dto.AbstractNamedEntityDto;
+import com.pe.advanced.api.dto.AbstractEntityDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
@@ -10,8 +10,12 @@ import java.math.BigDecimal;
  * A product as the server returns it: the caller's fields, plus everything the server owns -
  * identity, timestamps, version and status.
  */
-@Schema(description = "The product's data.")
-public class ProductDto extends AbstractNamedEntityDto {
+@Schema(description = "The product's full data, as its owner sees it.")
+public class ProductDto extends AbstractEntityDto {
+
+    @Schema(description = "The product's name.")
+    @JsonProperty(value = "name")
+    private String name;
 
     @Schema(description = "The product's stock keeping unit. Unique across all products.")
     @JsonProperty(value = "sku")
@@ -31,6 +35,14 @@ public class ProductDto extends AbstractNamedEntityDto {
 
     public ProductDto() {
         // POJO
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getSku() {

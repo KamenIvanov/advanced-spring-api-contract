@@ -7,12 +7,13 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * An entity that can be changed after it exists, which is what makes it the first type here
- * with a version.
+ * An entity a client may change, which is what makes it the first type here with a version.
  * <p>
- * The version is the concurrency token from the schema, carried out to the client. It arrives
- * read-only: the client is told which version it is holding, and how it hands that number
- * back on an update is a question about the request rather than about this type.
+ * The version is the concurrency token from the schema, carried out to the caller, and it is
+ * the reason this type exists separately from {@link AbstractCreatableEntityDto}: a summary
+ * handed to an anonymous reader has nothing to do with a version, because that reader cannot
+ * write. The concept arrives with the operation that needs it, exactly as it did in the
+ * entity hierarchy.
  */
 public abstract class AbstractEntityDto extends AbstractCreatableEntityDto {
 

@@ -22,17 +22,11 @@
 
         <spring.boot.version>4.1.1</spring.boot.version>
         <swagger.version>2.2.41</swagger.version>
-
-        <nexus.releases.url>https://nexus.example.com/repository/releases</nexus.releases.url>
-        <nexus.snapshots.url>https://nexus.example.com/repository/snapshots</nexus.snapshots.url>
     </properties>
-
-    <organization>
-        <name>PureEngine Ltd.</name>
-    </organization>
 
     <modules>
         <module>dto</module>
+        <module>events</module>
         <module>rest-api</module>
     </modules>
 
