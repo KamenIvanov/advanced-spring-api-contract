@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.pe.advanced.api</groupId>
+        <artifactId>api-contract-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>events</artifactId>
+    <packaging>jar</packaging>
+
+    <!--
+        Empty for now. It exists so that the shape of the contract is visible before there is
+        anything to publish: the REST surface and the event surface are two separate promises
+        to two separate kinds of consumer, and a consumer of one should not have to depend on
+        the other.
+    -->
+    <dependencies>
+        <dependency>
+            <groupId>com.pe.advanced.api</groupId>
+            <artifactId>dto</artifactId>
+        </dependency>
+    </dependencies>
+</project>
