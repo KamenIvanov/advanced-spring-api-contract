@@ -40,6 +40,17 @@
             <artifactId>jackson-databind</artifactId>
         </dependency>
 
+        <!--
+            The Spring mappings are on the interfaces, so a path and a verb are declared once and
+            the openapi module can produce a complete document without a running service. The cost
+            is a framework dependency inside a contract, which is stated rather than hidden: this
+            is a jar of annotations and types, and nothing here builds a context.
+        -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>

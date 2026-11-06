@@ -21,7 +21,9 @@
         <plugin.javadoc.version>3.12.0</plugin.javadoc.version>
 
         <spring.boot.version>4.1.1</spring.boot.version>
+        <spring.doc.version>3.1.1</spring.doc.version>
         <swagger.version>2.2.41</swagger.version>
+        <byte-buddy.version>1.18.14</byte-buddy.version>
 
         <nexus.releases.url>https://nexus.example.com/repository/releases</nexus.releases.url>
         <nexus.snapshots.url>https://nexus.example.com/repository/snapshots</nexus.snapshots.url>
@@ -31,6 +33,7 @@
         <module>dto</module>
         <module>events</module>
         <module>rest-api</module>
+        <module>openapi</module>
     </modules>
 
     <scm>
@@ -66,6 +69,12 @@
             </dependency>
 
             <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${spring.doc.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>io.swagger.core.v3</groupId>
                 <artifactId>swagger-annotations</artifactId>
                 <version>${swagger.version}</version>
@@ -74,6 +83,12 @@
             <dependency>
                 <groupId>com.pe.advanced.api</groupId>
                 <artifactId>dto</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.pe.advanced.api</groupId>
+                <artifactId>rest-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
