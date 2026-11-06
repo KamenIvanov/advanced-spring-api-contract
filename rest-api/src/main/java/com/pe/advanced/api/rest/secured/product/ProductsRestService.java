@@ -1,14 +1,13 @@
 package com.pe.advanced.api.rest.secured.product;
 
-import com.pe.advanced.api.dto.SortDirectionDto;
 import com.pe.advanced.api.dto.product.NewProductDto;
 import com.pe.advanced.api.dto.product.ProductDto;
-import com.pe.advanced.api.dto.product.ProductSortOptionDto;
 import com.pe.advanced.api.dto.product.ProductStatusDto;
 import com.pe.advanced.api.dto.product.ProductsDto;
 import com.pe.advanced.api.dto.product.UpdateProductDto;
 import com.pe.advanced.api.rest.HeaderConstants;
 import com.pe.advanced.api.rest.RestUrl;
+import com.pe.advanced.api.rest.search.ProductSearchParametersDto;
 import com.pe.advanced.api.rest.secured.CrudRestService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,6 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -44,17 +44,7 @@ public interface ProductsRestService extends CrudRestService<NewProductDto, Upda
     })
     @GetMapping
     ProductsDto getOwnProducts(
-            @Parameter(description = "The requested page index. The first page is 1.")
-            @RequestParam("page") int page,
-
-            @Parameter(description = "The page's size. The minimum is 1 element.")
-            @RequestParam("size") int size,
-
-            @Parameter(description = "The field the page is sorted by.")
-            @RequestParam("sort") ProductSortOptionDto sort,
-
-            @Parameter(description = "The direction the page is sorted in.")
-            @RequestParam("direction") SortDirectionDto direction,
+            @ModelAttribute ProductSearchParametersDto parameters,
 
             @Parameter(description = "The caller's identification.")
             @RequestHeader(HeaderConstants.REQUESTER_ID) UUID requesterId

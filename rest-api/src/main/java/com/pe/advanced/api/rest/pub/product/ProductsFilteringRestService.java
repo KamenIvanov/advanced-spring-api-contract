@@ -1,10 +1,9 @@
 package com.pe.advanced.api.rest.pub.product;
 
-import com.pe.advanced.api.dto.SortDirectionDto;
 import com.pe.advanced.api.dto.product.ProductDescriptionDto;
-import com.pe.advanced.api.dto.product.ProductSortOptionDto;
 import com.pe.advanced.api.dto.product.ProductsDescriptionsDto;
 import com.pe.advanced.api.rest.RestUrl;
+import com.pe.advanced.api.rest.search.ProductSearchParametersDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,9 +14,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.UUID;
 
@@ -44,22 +43,7 @@ public interface ProductsFilteringRestService {
             @ApiResponse(responseCode = "400", description = "Invalid paging or sorting arguments.", content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = ProblemDetail.class)))
     })
     @GetMapping
-    ProductsDescriptionsDto getProducts(
-            @Parameter(description = "The requested page index. The first page is 1.")
-            @RequestParam("page") int page,
-
-            @Parameter(description = "The page's size. The minimum is 1 element.")
-            @RequestParam("size") int size,
-
-            @Parameter(description = "The field the page is sorted by.")
-            @RequestParam("sort") ProductSortOptionDto sort,
-
-            @Parameter(description = "The direction the page is sorted in.")
-            @RequestParam("direction") SortDirectionDto direction,
-
-            @Parameter(description = "Text contained in the product's name, case insensitive.")
-            @RequestParam(value = "query", required = false) String query
-    );
+    ProductsDescriptionsDto getProducts(@ModelAttribute ProductSearchParametersDto parameters);
 
     /**
      * Loads one product. The description projection, not the full product: an anonymous

@@ -148,9 +148,14 @@ class OpenApiDocumentationIT {
         assertTrue(ifMatch.path("required").asBoolean());
 
         final var catalogue = spec.path("paths").path("/v1/products").path("get");
-        assertTrue(parameter(catalogue, "page").path("required").asBoolean());
-        assertFalse(parameter(catalogue, "query").path("required").asBoolean(),
-                "An optional filter must not be documented as required");
+        for (var name : Set.of("page", "size", "sort", "direction", "query")) {
+            final var flattened = parameter(catalogue, name);
+            assertEquals("query", flattened.path("in").asText(), name);
+            assertFalse(flattened.path("required").asBoolean(),
+                    name + " has a default, so a listing with no arguments is a valid request");
+        }
+        assertEquals("1", parameter(catalogue, "page").at("/schema/default").asText());
+        assertEquals("20", parameter(catalogue, "size").at("/schema/default").asText());
     }
 
     /**
@@ -163,6 +168,21 @@ class OpenApiDocumentationIT {
      * that a formatless number does not exist. That catches the next decimal field somebody adds
      * without anyone having to remember this rule.
      */
+    /**
+     * The search parameters are one argument in Java and five query parameters in the document.
+     * If springdoc ever stopped flattening them, a client generator would start asking callers to
+     * build an object and send it as a single value, which is not what the server reads.
+     */
+    @Test
+    void flattensTheSearchParameterObjectRatherThanPublishingItAsASchema() {
+        assertFalse(spec.at("/components/schemas").has("ProductSearchParametersDto"),
+                "A parameter object must not reach the document as a schema");
+        final var names = new HashSet<String>();
+        spec.path("paths").path("/v1/products").path("get").path("parameters")
+                .forEach(parameter -> names.add(parameter.path("name").asText()));
+        assertEquals(Set.of("page", "size", "sort", "direction", "query"), names);
+    }
+
     @Test
     void describesEveryDecimalAsAStringRatherThanANumber() {
         assertEquals("string", spec.at("/components/schemas/ProductDto/properties/price/type").asText());
