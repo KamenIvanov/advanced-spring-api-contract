@@ -5,8 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 /**
  * The root of every type on the wire.
  * <p>
- * It carries one annotation, and the annotation it does not carry is
- * {@code @JsonTypeInfo}. Writing a Java class name into the payload would make this
+ * Writing a Java class name into the payload would make this
  * project's package structure part of the published contract: renaming a package would
  * become a breaking change to an API that had not changed, and a consumer in another
  * language would have to carry a field it can do nothing with.

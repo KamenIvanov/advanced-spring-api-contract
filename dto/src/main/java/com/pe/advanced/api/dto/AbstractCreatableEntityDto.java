@@ -6,11 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
 import java.util.UUID;
 
-/**
- * Everything the server has created and will not change: the identifier it assigned and the
- * moment it did so. Both are read-only from a client's point of view, which is why the
- * types a client sends do not extend this one.
- */
 public abstract class AbstractCreatableEntityDto extends AbstractDto {
 
     @Schema(description = "The entity's identification, assigned by the server.", accessMode = Schema.AccessMode.READ_ONLY)

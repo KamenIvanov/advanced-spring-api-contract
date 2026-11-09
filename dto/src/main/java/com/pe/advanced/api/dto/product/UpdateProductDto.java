@@ -12,8 +12,7 @@ import java.math.BigDecimal;
  * is which in prose, and prose is not something a client can check.
  * <p>
  * The status is absent on purpose. A status change is a transition with rules, so it is an
- * operation rather than an assignment - the same argument the service layer made for
- * {@code changeStatus()} over a setter.
+ * operation rather than an assignment.
  */
 @Schema(description = "The data required to update a product.")
 public class UpdateProductDto extends AbstractDto {

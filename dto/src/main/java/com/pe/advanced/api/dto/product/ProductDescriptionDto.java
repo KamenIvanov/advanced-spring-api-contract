@@ -10,11 +10,6 @@ import java.math.BigDecimal;
  * A product as an anonymous reader sees it: enough to list it, price it and decide whether to
  * open it, and nothing else.
  * <p>
- * It is a sibling of {@link ProductDto} rather than a subset of it, and the difference is not
- * only which fields are present. There is no version and no update time here, because the
- * caller holding this cannot write - handing out a concurrency token to someone who cannot
- * use it would be describing the storage rather than the audience. What the two projections
- * share is an identity and a creation time, which is why they share a base and no more.
  */
 @Schema(description = "A product, as shown to anyone browsing the catalogue.")
 public class ProductDescriptionDto extends AbstractCreatableEntityDto {
