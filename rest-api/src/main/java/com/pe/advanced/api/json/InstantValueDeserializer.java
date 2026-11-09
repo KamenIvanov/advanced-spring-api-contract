@@ -11,8 +11,7 @@ import java.time.format.DateTimeParseException;
 /**
  * Reads an instant.
  * <p>
- * Deliberately more forgiving than the serializer. What this API writes is one exact format,
- * and what it accepts is any ISO-8601 instant, with or without a fractional part and with an
+ * What this API writes is one exact format, and what it accepts is any ISO-8601 instant, with or without a fractional part and with an
  * offset other than UTC. A client that sends {@code 2026-11-03T16:15:00+02:00} meant a moment
  * in time and said so correctly; rejecting it would be pedantry rather than a contract.
  * Strict on the way out, tolerant on the way in.

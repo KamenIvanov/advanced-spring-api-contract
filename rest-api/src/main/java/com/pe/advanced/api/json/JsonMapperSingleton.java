@@ -18,7 +18,7 @@ import java.util.Map;
  * <p>
  * It belongs in the contract rather than in the service because the way a value appears on the
  * wire is a fact about the API, not a detail of whoever implements it. A specification can say
- * that a price is a string; only this configuration makes it one. Publishing the mapper
+ * that a price is a string, only this configuration makes it one. Publishing the mapper
  * alongside the interfaces means a consumer can read the format from the same artifact that
  * declares the operations, and the integration tests that exercise it are testing the
  * published contract rather than a local approximation of it.
@@ -65,10 +65,6 @@ public final class JsonMapperSingleton {
         module.addSerializer(Instant.class, new InstantValueSerializer());
         module.addDeserializer(Instant.class, new InstantValueDeserializer());
 
-        // No activateDefaultTyping and no INDENT_OUTPUT. Default typing writes Java class
-        // names into payloads, which makes this project's package structure part of a
-        // published contract; indentation adds bytes to every response for the benefit of
-        // whoever is reading it by eye, which is not the caller.
         return JsonMapper.builder(factory)
                 .addModule(module)
                 .build();

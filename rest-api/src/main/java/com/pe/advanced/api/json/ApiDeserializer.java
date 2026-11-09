@@ -10,7 +10,7 @@ import com.pe.advanced.api.dto.AbstractDto;
  * type name to be in the JSON, which means every response carries a Java class name and the
  * published schema either documents it or lies by omission. Over HTTP nobody needs it: a
  * caller knows what it asked for, and on the server the framework deserializes into the
- * declared parameter type. The payload describes a value; the caller supplies the type.
+ * declared parameter type.
  */
 public final class ApiDeserializer {
 
