@@ -12,12 +12,6 @@
     <artifactId>rest-api</artifactId>
     <packaging>jar</packaging>
 
-    <!--
-        The mapper that decides what a price and an instant look like on the wire lives here,
-        which is why this module has databind and not only annotations. The way a value is
-        rendered is a fact about the API rather than a choice left to each implementation, so
-        it belongs in the artifact that publishes the API.
-    -->
     <dependencies>
         <dependency>
             <groupId>com.pe.advanced.api</groupId>
@@ -30,11 +24,6 @@
             <scope>compile</scope>
         </dependency>
 
-        <!--
-            Databind, not only annotations: this module carries the mapper that decides what a
-            price and an instant look like on the wire, which is a fact about the API rather
-            than a choice left to each implementation.
-        -->
         <dependency>
             <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>

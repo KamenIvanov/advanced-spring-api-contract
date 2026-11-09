@@ -12,14 +12,6 @@
     <artifactId>dto</artifactId>
     <packaging>jar</packaging>
 
-    <!--
-        Annotations only: jackson-annotations carries no mapper and no
-        databind, so these types describe a shape without imposing how it is read. Note the
-        group id is still com.fasterxml.jackson.core - jackson-annotations is the one artifact
-        Jackson 3 did not move to tools.jackson, and its package stays
-        com.fasterxml.jackson.annotation. @JsonSerialize and @JsonDeserialize did move, which
-        is one more reason type handling belongs in the mapper rather than on the fields.
-    -->
     <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

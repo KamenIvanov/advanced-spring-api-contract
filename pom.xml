@@ -39,11 +39,6 @@
         <tag>HEAD</tag>
     </scm>
 
-    <!--
-        The contract is versioned on its own, independently of the service that implements it.
-        A backend release that does not change the API does not change this version, so nobody
-        downstream has a reason to look.
-    -->
     <distributionManagement>
         <repository>
             <id>nexus-releases</id>

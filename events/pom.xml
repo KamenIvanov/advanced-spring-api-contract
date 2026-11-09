@@ -12,12 +12,6 @@
     <artifactId>events</artifactId>
     <packaging>jar</packaging>
 
-    <!--
-        Empty for now. It exists so that the shape of the contract is visible before there is
-        anything to publish: the REST surface and the event surface are two separate promises
-        to two separate kinds of consumer, and a consumer of one should not have to depend on
-        the other.
-    -->
     <dependencies>
         <dependency>
             <groupId>com.pe.advanced.api</groupId>
