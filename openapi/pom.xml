@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.pe.advanced.api</groupId>
+        <artifactId>api-contract-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>openapi</artifactId>
+    <name>OpenAPI documentation</name>
+
+    <properties>
+        <!-- Don't write jar in local repository -->
+        <maven.install.skip>true</maven.install.skip>
+        <!-- Don't deploy jar in nexus repository -->
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <!-- Don't generate sources jar, not needed -->
+        <maven.source.skip>true</maven.source.skip>
+
+        <documentation.repository.url>https://nexus.example.eu/repository/documentation</documentation.repository.url>
+        <documentation.repository.id>example-documentation</documentation.repository.id>
+        <documentation.path>example-api</documentation.path>
+        <wagon.skip>false</wagon.skip>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.pe.advanced.api</groupId>
+            <artifactId>rest-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+        </dependency>
+
+        <!-- springdoc's OpenAPI model serialization uses Jackson 2. -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.pe.advanced.api.openapi.DocumentationApplication</mainClass>
+                    <jmxPort>${openapi.jmx.port}</jmxPort>
+                    <arguments>
+                        <argument>--server.address=127.0.0.1</argument>
+                        <argument>--server.port=${openapi.http.port}</argument>
+                        <argument>--api.version=${project.version}</argument>
+                        <argument>--springdoc.api-docs.version=OPENAPI_3_0</argument>
+                        <argument>--springdoc.default-flat-param-object=true</argument>
+                        <argument>--springdoc.writer-with-order-by-keys=true</argument>
+                    </arguments>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>start-documentation-server</id>
+                        <phase>prepare-package</phase>
+                        <goals><goal>start</goal></goals>
+                    </execution>
+                    <execution>
+                        <id>stop-documentation-server</id>
+                        <phase>package</phase>
+                        <goals><goal>stop</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-maven-plugin</artifactId>
+                <configuration>
+                    <outputDir>${project.build.directory}/swagger-ui</outputDir>
+                    <failOnError>true</failOnError>
+                </configuration>
+                <executions>
+                    <!-- Published: the public group only, without the admin and internal endpoints -->
+                    <execution>
+                        <id>generate-openapi-json</id>
+                        <phase>prepare-package</phase>
+                        <goals><goal>generate</goal></goals>
+                        <configuration>
+                            <apiDocsUrl>http://127.0.0.1:${openapi.http.port}/v3/api-docs/public</apiDocsUrl>
+                            <outputFileName>openapi.json</outputFileName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-openapi-yaml</id>
+                        <phase>prepare-package</phase>
+                        <goals><goal>generate</goal></goals>
+                        <configuration>
+                            <apiDocsUrl>http://127.0.0.1:${openapi.http.port}/v3/api-docs.yaml/public</apiDocsUrl>
+                            <outputFileName>openapi.yaml</outputFileName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-swagger-ui</id>
+                        <phase>prepare-package</phase>
+                        <goals><goal>unpack-dependencies</goal></goals>
+                        <configuration>
+                            <!-- The Swagger UI version springdoc brings: no version of its own to keep in sync -->
+                            <includeGroupIds>org.webjars</includeGroupIds>
+                            <includeArtifactIds>swagger-ui</includeArtifactIds>
+                            <includes>META-INF/resources/webjars/swagger-ui/**</includes>
+                            <excludes>**/swagger-initializer.js,**/*.map</excludes>
+                            <outputDirectory>${project.build.directory}/swagger-ui</outputDirectory>
+                            <fileMappers>
+                                <org.codehaus.plexus.components.io.filemappers.RegExpFileMapper>
+                                    <pattern>^META-INF/resources/webjars/swagger-ui/[^/]+/(.*)</pattern>
+                                    <replacement>$1</replacement>
+                                </org.codehaus.plexus.components.io.filemappers.RegExpFileMapper>
+                            </fileMappers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>configure-swagger-ui</id>
+                        <phase>prepare-package</phase>
+                        <goals><goal>copy-resources</goal></goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/swagger-ui</outputDirectory>
+                            <overwrite>true</overwrite>
+                            <resources>
+                                <resource>
+                                    <directory>src/swagger-ui</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>reserve-documentation-ports</id>
+                        <phase>initialize</phase>
+                        <goals><goal>reserve-network-port</goal></goals>
+                        <configuration>
+                            <portNames>
+                                <portName>openapi.http.port</portName>
+                                <portName>openapi.jmx.port</portName>
+                            </portNames>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals><goal>integration-test</goal><goal>verify</goal></goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <systemPropertyVariables>
+                        <documentation.directory>${project.build.directory}/swagger-ui</documentation.directory>
+                        <documentation.version>${project.version}</documentation.version>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>wagon-maven-plugin</artifactId>
+                <configuration>
+                    <url>${nexus.documentation.url}</url>
+                    <serverId>${documentation.repository.id}</serverId>
+                    <fromDir>${project.build.directory}/swagger-ui</fromDir>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>publish-versioned-swagger-ui</id>
+                        <phase>deploy</phase>
+                        <goals><goal>upload</goal></goals>
+                        <configuration>
+                            <toDir>${documentation.path}/${project.version}</toDir>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
