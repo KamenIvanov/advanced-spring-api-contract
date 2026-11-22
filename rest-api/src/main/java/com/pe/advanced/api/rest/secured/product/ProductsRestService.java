@@ -1,16 +1,12 @@
 package com.pe.advanced.api.rest.secured.product;
 
-import com.pe.advanced.api.dto.product.NewProductDto;
-import com.pe.advanced.api.dto.product.ProductDto;
-import com.pe.advanced.api.dto.product.ProductStatusDto;
-import com.pe.advanced.api.dto.product.ProductsDto;
-import com.pe.advanced.api.dto.product.UpdateProductDto;
-import com.pe.advanced.api.rest.HeaderConstants;
+import com.pe.advanced.api.dto.product.*;
 import com.pe.advanced.api.rest.RestUrl;
 import com.pe.advanced.api.rest.search.ProductSearchParametersDto;
 import com.pe.advanced.api.rest.secured.CrudRestService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -18,15 +14,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+
+import static com.pe.advanced.api.rest.HeaderConstants.IF_MATCH;
+import static com.pe.advanced.api.rest.HeaderConstants.REQUESTER_ID;
 
 /**
  * A product as its owner works with it: the four CRUD operations on the full representation,
@@ -36,6 +29,7 @@ import java.util.UUID;
 @RequestMapping(value = RestUrl.SECURED_PRODUCTS, produces = MediaType.APPLICATION_JSON_VALUE)
 public interface ProductsRestService extends CrudRestService<NewProductDto, UpdateProductDto, ProductDto> {
 
+    @Parameter(name = REQUESTER_ID, in = ParameterIn.HEADER, required = true, description = "The caller's identification.", schema = @Schema(type = "string", format = "uuid"))
     @Operation(summary = "Loads the caller's own products in pages.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "The requested page of products."),
@@ -43,12 +37,7 @@ public interface ProductsRestService extends CrudRestService<NewProductDto, Upda
             @ApiResponse(responseCode = "401", description = "The caller did not identify itself.", content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = ProblemDetail.class)))
     })
     @GetMapping
-    ProductsDto getOwnProducts(
-            @ModelAttribute ProductSearchParametersDto parameters,
-
-            @Parameter(description = "The caller's identification.")
-            @RequestHeader(HeaderConstants.REQUESTER_ID) UUID requesterId
-    );
+    ProductsDto getOwnProducts(@ModelAttribute ProductSearchParametersDto parameters);
 
     /**
      * Moves a product through its lifecycle.
@@ -59,6 +48,8 @@ public interface ProductsRestService extends CrudRestService<NewProductDto, Upda
      * an illegal one is a 409 rather than a 400 - the request was well formed, the product
      * was simply not in a state it could leave.
      */
+    @Parameter(name = REQUESTER_ID, in = ParameterIn.HEADER, required = true, description = "The caller's identification.", schema = @Schema(type = "string", format = "uuid"))
+    @Parameter(name = IF_MATCH, in = ParameterIn.HEADER, required = true, description = "The version of the product the caller read, as returned in its 'version' field.", schema = @Schema(type = "integer", format = "0"))
     @Operation(summary = "Moves the product to another status.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "The product in its new status."),
@@ -89,12 +80,6 @@ public interface ProductsRestService extends CrudRestService<NewProductDto, Upda
             @PathVariable("id") UUID id,
 
             @Parameter(description = "The status the product should move to.")
-            @RequestParam("status") ProductStatusDto status,
-
-            @Parameter(description = "The version of the product the caller read, as returned in its 'version' field.")
-            @RequestHeader(HeaderConstants.IF_MATCH) Integer expectedVersion,
-
-            @Parameter(description = "The caller's identification.")
-            @RequestHeader(HeaderConstants.REQUESTER_ID) UUID requesterId
+            @RequestParam("status") ProductStatusDto status
     );
 }
