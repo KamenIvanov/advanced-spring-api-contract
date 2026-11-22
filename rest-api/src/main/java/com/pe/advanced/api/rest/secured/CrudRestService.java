@@ -64,7 +64,7 @@ public interface CrudRestService<NewDto extends AbstractDto, UpdateDto extends A
      * caller believing that does not retry.
      */
     @Parameter(name = REQUESTER_ID, in = ParameterIn.HEADER, required = true, description = "The caller's identification.", schema = @Schema(type = "string", format = "uuid"))
-    @Parameter(name = IF_MATCH, in = ParameterIn.HEADER, required = true, description = "The version of the entity the caller read, as returned in its 'version' field.", schema = @Schema(type = "integer", format = "0"))
+    @Parameter(name = IF_MATCH, in = ParameterIn.HEADER, required = true, description = "The version of the entity the caller read, as returned in its 'version' field.", schema = @Schema(type = "integer", format = "int32"))
     @Operation(summary = "Updates an existing entity.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "The updated entity."),

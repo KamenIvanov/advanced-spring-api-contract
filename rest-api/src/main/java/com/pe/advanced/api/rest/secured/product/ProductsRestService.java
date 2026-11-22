@@ -49,7 +49,7 @@ public interface ProductsRestService extends CrudRestService<NewProductDto, Upda
      * was simply not in a state it could leave.
      */
     @Parameter(name = REQUESTER_ID, in = ParameterIn.HEADER, required = true, description = "The caller's identification.", schema = @Schema(type = "string", format = "uuid"))
-    @Parameter(name = IF_MATCH, in = ParameterIn.HEADER, required = true, description = "The version of the product the caller read, as returned in its 'version' field.", schema = @Schema(type = "integer", format = "0"))
+    @Parameter(name = IF_MATCH, in = ParameterIn.HEADER, required = true, description = "The version of the product the caller read, as returned in its 'version' field.", schema = @Schema(type = "integer", format = "int32"))
     @Operation(summary = "Moves the product to another status.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "The product in its new status."),
