@@ -40,7 +40,7 @@ import static com.pe.advanced.api.rest.HeaderConstants.REQUESTER_ID;
  */
 public interface CrudRestService<NewDto extends AbstractDto, UpdateDto extends AbstractDto, Dto extends AbstractEntityDto> {
 
-    @Parameter(name = REQUESTER_ID, in = ParameterIn.HEADER, required = true, description = "Тhe caller's identification.", schema = @Schema(type = "string", format = "uuid"))
+    @Parameter(name = REQUESTER_ID, in = ParameterIn.HEADER, required = true, description = "The caller's identification.", schema = @Schema(type = "string", format = "uuid"))
     @Operation(summary = "Creates a new entity.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "The newly created entity."),
