@@ -119,7 +119,7 @@
                         <phase>prepare-package</phase>
                         <goals><goal>generate</goal></goals>
                         <configuration>
-                            <apiDocsUrl>http://127.0.0.1:${openapi.http.port}/v3/api-docs</apiDocsUrl>
+                            <apiDocsUrl>http://127.0.0.1:${openapi.http.port}/v3/api-docs.yaml</apiDocsUrl>
                             <outputFileName>openapi.yaml</outputFileName>
                         </configuration>
                     </execution>
