@@ -168,8 +168,7 @@ class OpenApiDocumentationIT {
     void leavesTheAnonymousOperationsWithoutACallerHeader() {
         for (var path : Set.of("/v1/products", "/v1/products/{id}")) {
             spec.path("paths").path(path).path("get").path("parameters").forEach(parameter ->
-                    assertFalse(HeaderConstants.REQUESTER_ID.equals(parameter.path("name").asText()),
-                            "An anonymous operation must not require a caller identification: " + path));
+                    assertNotEquals(HeaderConstants.REQUESTER_ID, parameter.path("name").asText(), "An anonymous operation must not require a caller identification: " + path));
         }
     }
 
@@ -183,16 +182,6 @@ class OpenApiDocumentationIT {
         }));
     }
 
-    /**
-     * Money is a string on the wire, because the mapper in rest-api writes BigDecimal with
-     * ToStringSerializer so that no client parses a price into a double. The specification has to
-     * say so, and this is the check that it does.
-     * <p>
-     * The rule names no field. A genuine floating point value carries a format, while a decimal
-     * that reached the schema unconverted is a "number" with no format at all, so the invariant is
-     * that a formatless number does not exist. That catches the next decimal field somebody adds
-     * without anyone having to remember this rule.
-     */
     /**
      * The search parameters are one argument in Java and five query parameters in the document.
      * If springdoc ever stopped flattening them, a client generator would start asking callers to
