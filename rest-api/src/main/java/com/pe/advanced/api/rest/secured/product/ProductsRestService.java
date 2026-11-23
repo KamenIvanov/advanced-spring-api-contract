@@ -4,6 +4,7 @@ import com.pe.advanced.api.dto.product.*;
 import com.pe.advanced.api.rest.RestUrl;
 import com.pe.advanced.api.rest.search.ProductSearchParametersDto;
 import com.pe.advanced.api.rest.secured.CrudRestService;
+import com.pe.advanced.api.rest.secured.SecuredRestService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 import static com.pe.advanced.api.rest.HeaderConstants.IF_MATCH;
-import static com.pe.advanced.api.rest.HeaderConstants.REQUESTER_ID;
 
 /**
  * A product as its owner works with it: the four CRUD operations on the full representation,
@@ -27,9 +27,8 @@ import static com.pe.advanced.api.rest.HeaderConstants.REQUESTER_ID;
  */
 @Tag(name = "Products", description = "Managing one's own products.")
 @RequestMapping(value = RestUrl.SECURED_PRODUCTS, produces = MediaType.APPLICATION_JSON_VALUE)
-public interface ProductsRestService extends CrudRestService<NewProductDto, UpdateProductDto, ProductDto> {
+public interface ProductsRestService extends CrudRestService<NewProductDto, UpdateProductDto, ProductDto>, SecuredRestService {
 
-    @Parameter(name = REQUESTER_ID, in = ParameterIn.HEADER, required = true, description = "The caller's identification.", schema = @Schema(type = "string", format = "uuid"))
     @Operation(summary = "Loads the caller's own products in pages.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "The requested page of products."),
@@ -48,7 +47,6 @@ public interface ProductsRestService extends CrudRestService<NewProductDto, Upda
      * an illegal one is a 409 rather than a 400 - the request was well formed, the product
      * was simply not in a state it could leave.
      */
-    @Parameter(name = REQUESTER_ID, in = ParameterIn.HEADER, required = true, description = "The caller's identification.", schema = @Schema(type = "string", format = "uuid"))
     @Parameter(name = IF_MATCH, in = ParameterIn.HEADER, required = true, description = "The version of the product the caller read, as returned in its 'version' field.", schema = @Schema(type = "integer", format = "int32"))
     @Operation(summary = "Moves the product to another status.")
     @ApiResponses({

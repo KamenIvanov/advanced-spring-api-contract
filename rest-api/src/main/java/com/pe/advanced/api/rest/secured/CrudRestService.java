@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 import static com.pe.advanced.api.rest.HeaderConstants.IF_MATCH;
-import static com.pe.advanced.api.rest.HeaderConstants.REQUESTER_ID;
 
 /**
  * The four operations every owned entity has, declared once.
@@ -40,7 +39,6 @@ import static com.pe.advanced.api.rest.HeaderConstants.REQUESTER_ID;
  */
 public interface CrudRestService<NewDto extends AbstractDto, UpdateDto extends AbstractDto, Dto extends AbstractEntityDto> {
 
-    @Parameter(name = REQUESTER_ID, in = ParameterIn.HEADER, required = true, description = "The caller's identification.", schema = @Schema(type = "string", format = "uuid"))
     @Operation(summary = "Creates a new entity.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "The newly created entity."),
@@ -63,7 +61,6 @@ public interface CrudRestService<NewDto extends AbstractDto, UpdateDto extends A
      * handler learns about the optimistic lock - tells the caller the server is broken, and a
      * caller believing that does not retry.
      */
-    @Parameter(name = REQUESTER_ID, in = ParameterIn.HEADER, required = true, description = "The caller's identification.", schema = @Schema(type = "string", format = "uuid"))
     @Parameter(name = IF_MATCH, in = ParameterIn.HEADER, required = true, description = "The version of the entity the caller read, as returned in its 'version' field.", schema = @Schema(type = "integer", format = "int32"))
     @Operation(summary = "Updates an existing entity.")
     @ApiResponses({
@@ -83,7 +80,6 @@ public interface CrudRestService<NewDto extends AbstractDto, UpdateDto extends A
             @RequestBody UpdateDto updateDto
     );
 
-    @Parameter(name = REQUESTER_ID, in = ParameterIn.HEADER, required = true, description = "The caller's identification.", schema = @Schema(type = "string", format = "uuid"))
     @Operation(summary = "Loads the entity associated with the supplied identification.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "The requested entity."),
@@ -101,7 +97,6 @@ public interface CrudRestService<NewDto extends AbstractDto, UpdateDto extends A
      * Deletes an entity. Deleting something that is not there is not an error, because the
      * caller asked for a state and that state already holds.
      */
-    @Parameter(name = REQUESTER_ID, in = ParameterIn.HEADER, required = true, description = "The caller's identification.", schema = @Schema(type = "string", format = "uuid"))
     @Operation(summary = "Deletes the entity associated with the supplied identification.")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "The entity no longer exists."),

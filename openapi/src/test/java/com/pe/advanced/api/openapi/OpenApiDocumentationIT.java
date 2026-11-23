@@ -12,10 +12,7 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Runs after the documentation server has stopped, against the files the build produced.
@@ -127,12 +124,19 @@ class OpenApiDocumentationIT {
     }
 
     /**
-     * Where a parameter lives and whether it is required were never written down twice: the Spring
-     * bindings say it and the Swagger annotations only describe it. This checks the generator read
-     * the bindings rather than guessing.
+     * Where a parameter travels and whether it is required, checked against what the document
+     * actually says rather than against what any one mechanism was supposed to produce.
+     * <p>
+     * Three mechanisms end up in the same parameter list here, which is the reason this is one
+     * test. The path variable and the flattened search fields are read from the Spring bindings,
+     * so a wrong answer would mean the generator ignored a binding that is right there in the
+     * signature. {@code If-Match} is a declaration on the operation, because a precondition is
+     * not an argument the method was sent. {@code X-Requester-Id} is added by the customizer in
+     * the documentation application, since it is required by every secured operation and nothing
+     * is gained by repeating it on each one.
      */
     @Test
-    void infersParameterLocationsAndRequirednessFromTheSpringBindings() {
+    void describesEveryParameterWhereItActuallyTravels() {
         final var update = spec.path("paths").path("/v1/secured/products/{id}").path("put");
 
         final var id = parameter(update, "id");
@@ -142,10 +146,12 @@ class OpenApiDocumentationIT {
         final var requester = parameter(update, HeaderConstants.REQUESTER_ID);
         assertEquals("header", requester.path("in").asText());
         assertTrue(requester.path("required").asBoolean());
+        assertEquals("uuid", requester.at("/schema/format").asText());
 
         final var ifMatch = parameter(update, HeaderConstants.IF_MATCH);
         assertEquals("header", ifMatch.path("in").asText());
         assertTrue(ifMatch.path("required").asBoolean());
+        assertEquals("integer", ifMatch.at("/schema/type").asText());
 
         final var catalogue = spec.path("paths").path("/v1/products").path("get");
         for (var name : Set.of("page", "size", "sort", "direction", "query")) {
@@ -156,6 +162,25 @@ class OpenApiDocumentationIT {
         }
         assertEquals("1", parameter(catalogue, "page").at("/schema/default").asText());
         assertEquals("20", parameter(catalogue, "size").at("/schema/default").asText());
+    }
+
+    @Test
+    void leavesTheAnonymousOperationsWithoutACallerHeader() {
+        for (var path : Set.of("/v1/products", "/v1/products/{id}")) {
+            spec.path("paths").path(path).path("get").path("parameters").forEach(parameter ->
+                    assertFalse(HeaderConstants.REQUESTER_ID.equals(parameter.path("name").asText()),
+                            "An anonymous operation must not require a caller identification: " + path));
+        }
+    }
+
+    @Test
+    void declaresEveryParameterOnce() {
+        spec.path("paths").properties().forEach(path -> path.getValue().properties().forEach(operation -> {
+            final var names = new HashSet<String>();
+            operation.getValue().path("parameters").forEach(parameter ->
+                    assertTrue(names.add(parameter.path("name").asText()),
+                            "Duplicate parameter " + parameter.path("name").asText() + " on " + path.getKey()));
+        }));
     }
 
     /**

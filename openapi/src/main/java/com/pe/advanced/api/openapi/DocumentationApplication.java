@@ -1,13 +1,17 @@
 package com.pe.advanced.api.openapi;
 
+import com.pe.advanced.api.rest.HeaderConstants;
+import com.pe.advanced.api.rest.secured.SecuredRestService;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.parameters.HeaderParameter;
 import io.swagger.v3.oas.models.servers.Server;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.description.annotation.AnnotationDescription;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import net.bytebuddy.implementation.StubMethod;
-import org.springdoc.core.models.GroupedOpenApi;
+import org.springdoc.core.customizers.OperationCustomizer;
 import org.springdoc.core.utils.SpringDocUtils;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,17 +58,16 @@ public class DocumentationApplication {
                 .servers(List.of(new Server().url("/")));
     }
 
-    /**
-     * One group, because every operation in this contract is for the same client.
-     * <p>
-     * Splitting the document into a published group and a wider internal one is worth doing the
-     * day there is an administrative or a service-to-service surface that must not reach the
-     * published file. There is not one yet, and inventing an endpoint to demonstrate the mechanism
-     * would be building a feature to justify a design.
-     */
     @Bean
-    GroupedOpenApi publicApi() {
-        return GroupedOpenApi.builder().group("public").pathsToMatch("/**").build();
+    OperationCustomizer requesterIdentification() {
+        final var requester = new HeaderParameter()
+                .name(HeaderConstants.REQUESTER_ID)
+                .required(true)
+                .description("The caller's identification.")
+                .schema(new StringSchema().format("uuid"));
+        return (operation, handlerMethod) -> SecuredRestService.class.isAssignableFrom(handlerMethod.getBeanType())
+                ? operation.addParametersItem(requester)
+                : operation;
     }
 
     @Bean
