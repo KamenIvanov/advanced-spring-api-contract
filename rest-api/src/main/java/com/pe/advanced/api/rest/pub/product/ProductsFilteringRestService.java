@@ -25,7 +25,7 @@ import java.util.UUID;
  * <p>
  * It returns {@link ProductDescriptionDto} rather than the full product, and that is the
  * reason this interface exists separately rather than as the same operations without a
- * session. Two audiences want two different representations of one thing, and the honest way
+ * session. Two audiences want two different representations of one thing, and the way
  * to say so is two resources: this one is cacheable by anybody, the other is not, and a
  * specification can describe each of them exactly. One path whose response changes according
  * to who asked cannot be described at all, and is a hazard the first shared cache discovers.

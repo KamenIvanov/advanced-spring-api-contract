@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * <p>
  * It is bound with {@code @ModelAttribute}, so Spring fills it from the query string and the
  * generated document flattens it back into separate query parameters. A client sees exactly what
- * it saw when these were five parameters on the method; what changes is the signature of
+ * it saw when these were five parameters on the method, what changes is the signature of
  * everything that has to carry them - the interface, the controller, and the service behind it.
  * <p>
  * It lives in {@code rest-api} rather than in {@code dto} because it is never serialized. It is a
